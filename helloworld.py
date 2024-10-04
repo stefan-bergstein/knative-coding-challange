@@ -15,7 +15,7 @@ def hello_world():
     #    response.headers["Ce-Source"] = "knative/eventing/samples/hello-world"
     #    response.headers["Ce-Type"] = "dev.knative.samples.hifromknative"
     #    return response
-    return
+    return True
 
 
 if __name__ == "__main__":
