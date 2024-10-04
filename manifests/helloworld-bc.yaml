@@ -18,7 +18,7 @@ metadata:
 spec:
   strategy:
     dockerStrategy:
-      dockerfilePath: Dockerfile
+      dockerfilePath: Containerfile
     type: Docker
   source:
     git:
