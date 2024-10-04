@@ -1,0 +1,36 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: helloworld
+  labels:
+    component: helloworld
+spec:
+  lookupPolicy:
+    local: true
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  labels:
+    app: helloworld
+    component: helloworld
+  name: helloworld
+spec:
+  strategy:
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+    type: Docker
+  source:
+    git:
+      uri: https://github.com/stefan-bergstein/knative-coding-challange.git
+    type: Git
+  output:
+    to:
+      kind: ImageStreamTag
+      name: helloworld:latest
+  runPolicy: Serial
+  triggers:
+  - type: ConfigChange
+  successfulBuildsHistoryLimit: 3
+  postCommit: {}
+  resources: {}
