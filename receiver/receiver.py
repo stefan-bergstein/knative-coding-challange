@@ -1,7 +1,10 @@
 from flask import Flask, request, make_response
 import uuid
-
+import os
 from logging.config import dictConfig
+
+
+log_level = os.getenv("LOG_LEVEL", default="ERROR")
 
 # Configure logging using dictConfig
 dictConfig(
@@ -27,8 +30,8 @@ dictConfig(
         },
         # Configure the root logger
         "root": {
-            # Set root logger level to CRITICAL
-            "level": "CRITICAL",
+            # Set root logger level to DEBUG, INFO, WARNING, ERROR, or CRITICAL
+            "level": log_level,
             # Attach 'console' handler to the root logger
             "handlers": ["console"],
         },
@@ -44,13 +47,18 @@ def hello_world():
     print("Received event: {}".format(request.data))
     # Respond with another event (optional)
 
-    # response = make_response({"msg": "Hi from helloworld-python app!"})
-    # response.headers["Ce-Id"] = str(uuid.uuid4())
-    # response.headers["Ce-specversion"] = "0.3"
-    # response.headers["Ce-Source"] = "knative/eventing/samples/hello-world"
-    # response.headers["Ce-Type"] = "dev.knative.samples.hifromknative"
-    # return response
-    return
+    bug = True
+    if not bug:
+        response = make_response({"msg": "Hi from receiver-python app!"})
+        response.headers["Ce-Id"] = str(uuid.uuid4())
+        response.headers["Ce-specversion"] = "0.3"
+        response.headers["Ce-Source"] = "knative/eventing/samples/receiver"
+        response.headers["Ce-Type"] = "dev.knative.samples.hifromknative"
+        response.status_code = "200"
+    else:
+        response = True
+
+    return response
 
 
 if __name__ == "__main__":

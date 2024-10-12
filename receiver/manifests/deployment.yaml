@@ -1,0 +1,56 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: receiver
+  namespace: rhsc-hands-on
+  annotations:
+    deployment.kubernetes.io/revision: '3'
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"receiver:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"receiver\")].image"}]'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: receiver
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: receiver
+    spec:
+      containers:
+        - name: receiver
+          image: receiver:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 600
+---
+# Service that exposes receiver app.
+# This will be the subscriber for the Trigger
+apiVersion: v1
+kind: Service
+metadata:
+  name: receiver-python
+  namespace: rhsc-hands-on
+spec:
+  selector:
+    app: receiver
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080

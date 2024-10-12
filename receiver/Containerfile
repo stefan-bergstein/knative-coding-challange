@@ -14,4 +14,4 @@ USER 1001
 EXPOSE 8080
 ENTRYPOINT ["python3"]
 
-CMD [ "helloworld.py" ]
+CMD [ "receiver.py" ]

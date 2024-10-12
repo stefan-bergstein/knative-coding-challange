@@ -1,0 +1,17 @@
+# Knative Eventing Trigger to trigger the receiver-python service
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: receiver-python
+  namespace: rhsc-hands-on
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: dev.knative.samples.receiver
+      source: dev.knative.samples/receiversource
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: receiver-python
